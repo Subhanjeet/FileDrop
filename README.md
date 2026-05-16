@@ -2,8 +2,6 @@
 
 **P2P file transfer in the browser — no server, no uploads, no accounts.**
 
-Live → [subhanjeet-filedrop.vercel.app](https://subhanjeet-filedrop.vercel.app)
-
 ---
 
 ## What it is
