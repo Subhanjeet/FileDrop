@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FileDrop — P2P Transfer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ─── Header ──────────────────────────────────────────────── -->
+<header>
+  <div class="logo">
+    <div class="dot"></div>
+    FileDrop
+  </div>
+  <div class="status-pill" id="connectionStatus">
+    <span class="indicator"></span>
+    <span id="statusText">Disconnected</span>
+  </div>
+</header>
+
+<!-- ─── Main Layout ──────────────────────────────────────────── -->
+<main>
+
+  <!-- ═══ SENDER PANEL ═══════════════════════════════════════ -->
+  <div class="panel" id="senderPanel">
+    <div>
+      <div class="panel-label">Step 1</div>
+      <div class="panel-title">Send a <span>File</span></div>
+    </div>
+
+    <!-- File drop zone -->
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" />
+      <div class="drop-icon">📂</div>
+      <div class="drop-title">Drop file here or click to browse</div>
+      <div class="drop-sub">Any file type · No size limit</div>
+    </div>
+
+    <!-- Selected file preview card -->
+    <div id="fileCardWrap" style="display:none"></div>
+
+    <!-- Progress -->
+    <div>
+      <div class="progress-wrap" id="sendProgress">
+        <div class="progress-bar" id="sendBar"></div>
+      </div>
+      <div class="progress-label" id="sendProgressLabel" style="display:none">
+        <span id="sendProgressText">Sending…</span>
+        <span id="sendProgressPct">0%</span>
+      </div>
+    </div>
+
+    <!-- Offer signal (shown after clicking "Create Connection") -->
+    <div id="offerBox" style="display:none">
+      <div class="signal-box">
+        <div class="signal-label">🔑 Your Connection Code — share with receiver</div>
+        <textarea class="signal-textarea" id="offerOutput" readonly></textarea>
+        <div class="signal-actions">
+          <button class="btn btn-outline" onclick="copyOffer()">📋 Copy Code</button>
+        </div>
+      </div>
+
+      <!-- Paste receiver's answer -->
+      <div class="signal-box" style="margin-top:12px">
+        <div class="signal-label">📥 Paste Receiver's Answer Code</div>
+        <textarea class="signal-textarea" id="answerInput" placeholder="Paste answer code here…"></textarea>
+        <div class="signal-actions">
+          <button class="btn btn-primary" onclick="applyAnswer()">✔ Apply Answer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div id="senderToasts" class="toast-area"></div>
+    <button class="btn btn-primary" id="createOfferBtn" onclick="startSenderFlow()">⚡ Create Connection</button>
+    <button class="btn btn-primary" id="sendFileBtn" onclick="sendFile()" style="display:none" disabled>🚀 Send File</button>
+  </div>
+
+  <!-- ═══ DIVIDER ════════════════════════════════════════════ -->
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-icon">↔</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- ═══ RECEIVER PANEL ══════════════════════════════════════ -->
+  <div class="panel" id="receiverPanel">
+    <div>
+      <div class="panel-label">Step 2</div>
+      <div class="panel-title">Receive a <span>File</span></div>
+    </div>
+
+    <!-- Paste sender's offer -->
+    <div class="signal-box">
+      <div class="signal-label">📥 Paste Sender's Connection Code</div>
+      <textarea class="signal-textarea" id="offerInput" placeholder="Paste code from sender…"></textarea>
+      <div class="signal-actions">
+        <button class="btn btn-outline" onclick="generateAnswer()">🔗 Generate Answer</button>
+      </div>
+    </div>
+
+    <!-- Answer code to share back -->
+    <div id="answerBox" style="display:none">
+      <div class="signal-box">
+        <div class="signal-label">🔑 Your Answer Code — send back to sender</div>
+        <textarea class="signal-textarea" id="answerOutput" readonly></textarea>
+        <div class="signal-actions">
+          <button class="btn btn-outline" onclick="copyAnswer()">📋 Copy Answer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div>
+      <div class="progress-wrap" id="recvProgress">
+        <div class="progress-bar" id="recvBar"></div>
+      </div>
+      <div class="progress-label" id="recvProgressLabel" style="display:none">
+        <span id="recvProgressText">Receiving…</span>
+        <span id="recvProgressPct">0%</span>
+      </div>
+    </div>
+
+    <!-- Received files list -->
+    <div id="receiverToasts" class="toast-area"></div>
+    <div id="receivedSection">
+      <div class="empty-state" id="emptyReceived">
+        <span class="e-icon">📭</span>
+        Files received will appear here
+      </div>
+      <div class="received-list" id="receivedList" style="display:none"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ─── How-to Footer ────────────────────────────────────────── -->
+<footer class="howto">
+  <div class="howto-step"><span class="n">1</span> Sender selects file &amp; clicks Create Connection</div>
+  <span class="howto-arrow">→</span>
+  <div class="howto-step"><span class="n">2</span> Share the Offer Code with receiver</div>
+  <span class="howto-arrow">→</span>
+  <div class="howto-step"><span class="n">3</span> Receiver pastes it &amp; generates Answer Code</div>
+  <span class="howto-arrow">→</span>
+  <div class="howto-step"><span class="n">4</span> Sender pastes Answer → Connected → Send!</div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
